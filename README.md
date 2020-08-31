@@ -8,6 +8,8 @@
   <img width="30%" height="30%" src="https://github.com/yeukfei02/calendarReactNative/blob/master/screenshot2.png" alt="">
 </p>
 
+display random mood in calendar
+
 ## Requirement:
  - install expo-cli
  - install yarn
