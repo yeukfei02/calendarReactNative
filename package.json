@@ -1,6 +1,7 @@
 {
   "main": "node_modules/expo/AppEntry.js",
   "dependencies": {
+    "@expo/vector-icons": "^10.2.1",
     "@types/jest": "^26.0.10",
     "@types/lodash": "^4.14.161",
     "@typescript-eslint/eslint-plugin": "^3.10.1",
