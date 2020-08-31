@@ -1,6 +1,12 @@
-# calendarReactNative
+<p align="center">
+  <!-- <img width="200px" src="https://github.com/yeukfei02/calendarReactNative/blob/master/readme-icon.png"><br/> -->
+  <h2 align="center">calendarReactNative</h2>
+</p>
 
-calendarReactNative
+<p align="center">
+  <img width="30%" height="30%" src="https://github.com/yeukfei02/calendarReactNative/blob/master/screenshot1.png" alt="">
+  <img width="30%" height="30%" src="https://github.com/yeukfei02/calendarReactNative/blob/master/screenshot2.png" alt="">
+</p>
 
 ## Requirement:
  - install expo-cli
