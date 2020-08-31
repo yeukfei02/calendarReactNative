@@ -253,7 +253,7 @@ function CalendarView(props: any): JSX.Element {
   };
 
   const renderTodayText = (today: string, fullDateStr: string, day: string) => {
-    let todayText = <Text style={{ fontSize: 15, color: 'black' }}>{day}</Text>;
+    let todayText = <Text style={{ fontSize: 15, color: 'gray' }}>{day}</Text>;
 
     if (today === fullDateStr) {
       todayText = (
