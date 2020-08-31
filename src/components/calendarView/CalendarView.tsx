@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, ScrollView } from 'react-native';
 import { Col, Grid } from 'react-native-easy-grid';
 import moment from 'moment';
+import { Entypo } from '@expo/vector-icons';
 
 const styles = StyleSheet.create({
   container: {
@@ -10,7 +11,7 @@ const styles = StyleSheet.create({
   },
   viewContainer: {
     marginVertical: 50,
-    padding: 30,
+    padding: 25,
   },
   currentMonth: {
     fontSize: 30,
@@ -182,6 +183,8 @@ function CalendarView(props: any): JSX.Element {
                 borderRadius: 5,
                 marginTop: 25,
                 marginBottom: 10,
+                alignItems: 'center',
+                justifyContent: 'center',
               }}
             />
             <View>
@@ -204,6 +207,8 @@ function CalendarView(props: any): JSX.Element {
                 borderRadius: 5,
                 marginTop: 25,
                 marginBottom: 10,
+                alignItems: 'center',
+                justifyContent: 'center',
               }}
             />
             <View>
@@ -231,8 +236,12 @@ function CalendarView(props: any): JSX.Element {
                 borderRadius: 5,
                 marginTop: 25,
                 marginBottom: 10,
+                alignItems: 'center',
+                justifyContent: 'center',
               }}
-            />
+            >
+              <View>{renderEmojiIcon(moodStr)}</View>
+            </View>
             <View>{renderTodayText(today, item.fullDateStr, day)}</View>
           </View>
         );
@@ -261,6 +270,26 @@ function CalendarView(props: any): JSX.Element {
     }
 
     return todayText;
+  };
+
+  const renderEmojiIcon = (moodStr: string) => {
+    let emojiIcon = null;
+
+    switch (moodStr) {
+      case 'good':
+        emojiIcon = <Entypo name="emoji-happy" size={24} color="black" />;
+        break;
+      case 'okay':
+        emojiIcon = <Entypo name="emoji-neutral" size={24} color="black" />;
+        break;
+      case 'bad':
+        emojiIcon = <Entypo name="emoji-sad" size={24} color="black" />;
+        break;
+      default:
+        break;
+    }
+
+    return emojiIcon;
   };
 
   return (
