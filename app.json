@@ -17,10 +17,15 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "bundleIdentifier": "com.donaldwu.calendarreactnative",
+      "buildNumber": "1.0.0"
     },
-    "web": {
-      "favicon": "./assets/favicon.png"
-    }
+    "android": {
+      "package": "com.donaldwu.calendarreactnative",
+      "versionCode": 1
+    },
+    "description": "Display random mood in calendar",
+    "privacy": "public",
+    "githubUrl": "https://github.com/yeukfei02/calendarReactNative"
   }
 }
