@@ -381,14 +381,14 @@ function CalendarView(props: any): JSX.Element {
             <Text style={styles.currentYear}>{currentYear}</Text>
           </View>
 
-          <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
+          {/* <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
             <TouchableOpacity onPress={() => handleDecreaseMonth()}>
               <AntDesign name="arrowleft" size={24} color="black" />
             </TouchableOpacity>
             <TouchableOpacity onPress={() => handleIncreaseMonth()} style={{ marginLeft: 10 }}>
               <AntDesign name="arrowright" size={24} color="black" />
             </TouchableOpacity>
-          </View>
+          </View> */}
         </View>
 
         <View style={{ marginTop: 40 }}>

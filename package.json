@@ -11,6 +11,7 @@
     "eslint-plugin-prettier": "^3.1.4",
     "eslint-plugin-react": "^7.20.6",
     "expo": "~38.0.8",
+    "git-cz": "^4.7.1",
     "jest": "^26.4.2",
     "jest-expo": "^38.0.2",
     "lodash": "^4.17.20",
@@ -36,7 +37,8 @@
     "web": "expo start --web",
     "eject": "expo eject",
     "test": "jest",
-    "lint": "eslint '*/**/*.{ts,tsx}' --quiet --fix"
+    "lint": "eslint '*/**/*.{ts,tsx}' --quiet --fix",
+    "commit": "npx git-cz"
   },
   "private": true
 }
