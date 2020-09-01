@@ -59,6 +59,14 @@ function CalendarView(props: any): JSX.Element {
   const [saturdayList, setSaturdayList] = useState<DayListData[]>([]);
   const [sundayList, setSundayList] = useState<DayListData[]>([]);
 
+  const [mondayEmptyBox, setMondayEmptyBox] = useState(false);
+  const [tuesdayEmptyBox, setTuesdayEmptyBox] = useState(false);
+  const [wednesdayEmptyBox, setWednesdayEmptyBox] = useState(false);
+  const [thursdayEmptyBox, setThursdayEmptyBox] = useState(false);
+  const [fridayEmptyBox, setFridayEmptyBox] = useState(false);
+  const [saturdayEmptyBox, setSaturdayEmptyBox] = useState(false);
+  const [sundayEmptyBox, setSundayEmptyBox] = useState(false);
+
   const [journals, setJournals] = useState<string[]>([]);
 
   useEffect(() => {
@@ -170,6 +178,36 @@ function CalendarView(props: any): JSX.Element {
         return item.isoWeekDay === 7;
       });
       setSundayList(sundayList);
+
+      const firstWeekMonday = mondayList[0].fullDateStr;
+      const firstWeekTuesday = tuesdayList[0].fullDateStr;
+      const firstWeekWednesday = wednesdayList[0].fullDateStr;
+      const firstWeekThursday = thursdayList[0].fullDateStr;
+      const firstWeekFriday = fridayList[0].fullDateStr;
+      const firstWeekSaturday = saturdayList[0].fullDateStr;
+      const firstWeekSunday = sundayList[0].fullDateStr;
+
+      if (moment(firstWeekMonday).isAfter(moment(firstWeekTuesday))) {
+        setMondayEmptyBox(true);
+      }
+      if (moment(firstWeekTuesday).isAfter(moment(firstWeekWednesday))) {
+        setTuesdayEmptyBox(true);
+      }
+      if (moment(firstWeekWednesday).isAfter(moment(firstWeekThursday))) {
+        setWednesdayEmptyBox(true);
+      }
+      if (moment(firstWeekThursday).isAfter(moment(firstWeekFriday))) {
+        setThursdayEmptyBox(true);
+      }
+      if (moment(firstWeekFriday).isAfter(moment(firstWeekSaturday))) {
+        setFridayEmptyBox(true);
+      }
+      if (moment(firstWeekSaturday).isAfter(moment(firstWeekSunday))) {
+        setSaturdayEmptyBox(true);
+      }
+      if (moment(firstWeekSunday).isAfter(moment(firstWeekMonday))) {
+        setSundayEmptyBox(true);
+      }
     }
   };
 
@@ -191,22 +229,14 @@ function CalendarView(props: any): JSX.Element {
     return weekDaysDiv;
   };
 
-  const renderDayListDiv = (dayList: DayListData[]) => {
+  const renderDayListDiv = (dayList: DayListData[], addEmptyBox: boolean) => {
     const dayListDiv: any[] = [];
 
     if (dayList) {
       const today = moment().format('YYYY-MM-DD');
 
       // determine column to move down
-      if (
-        dayList.length < mondayList.length ||
-        dayList.length < tuesdayList.length ||
-        dayList.length < wednesdayList.length ||
-        dayList.length < thursdayList.length ||
-        dayList.length < fridayList.length ||
-        dayList.length < saturdayList.length ||
-        dayList.length < sundayList.length
-      ) {
+      if (addEmptyBox) {
         const resultDiv = (
           <View style={{ flexDirection: 'column', alignItems: 'center' }}>
             <View
@@ -367,13 +397,13 @@ function CalendarView(props: any): JSX.Element {
 
         <View>
           <Grid>
-            <Col>{renderDayListDiv(mondayList)}</Col>
-            <Col>{renderDayListDiv(tuesdayList)}</Col>
-            <Col>{renderDayListDiv(wednesdayList)}</Col>
-            <Col>{renderDayListDiv(thursdayList)}</Col>
-            <Col>{renderDayListDiv(fridayList)}</Col>
-            <Col>{renderDayListDiv(saturdayList)}</Col>
-            <Col>{renderDayListDiv(sundayList)}</Col>
+            <Col>{renderDayListDiv(mondayList, mondayEmptyBox)}</Col>
+            <Col>{renderDayListDiv(tuesdayList, tuesdayEmptyBox)}</Col>
+            <Col>{renderDayListDiv(wednesdayList, wednesdayEmptyBox)}</Col>
+            <Col>{renderDayListDiv(thursdayList, thursdayEmptyBox)}</Col>
+            <Col>{renderDayListDiv(fridayList, fridayEmptyBox)}</Col>
+            <Col>{renderDayListDiv(saturdayList, saturdayEmptyBox)}</Col>
+            <Col>{renderDayListDiv(sundayList, sundayEmptyBox)}</Col>
           </Grid>
         </View>
       </View>
