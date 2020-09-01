@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, ScrollView, TouchableOpacity } from 'react-native';
 import { Col, Grid } from 'react-native-easy-grid';
+import _ from 'lodash';
 import moment from 'moment';
 import { Entypo, AntDesign } from '@expo/vector-icons';
 
@@ -58,6 +59,8 @@ function CalendarView(props: any): JSX.Element {
   const [saturdayList, setSaturdayList] = useState<DayListData[]>([]);
   const [sundayList, setSundayList] = useState<DayListData[]>([]);
 
+  const [journals, setJournals] = useState<string[]>([]);
+
   useEffect(() => {
     getToday();
     getCurrentMonth();
@@ -73,6 +76,10 @@ function CalendarView(props: any): JSX.Element {
       getAvailableDaysInMonth(yearStr, monthStr);
     }
   }, [yearStr, monthStr]);
+
+  useEffect(() => {
+    setJournals(props.journals);
+  }, [props.journals]);
 
   const getToday = () => {
     const today = moment().format('YYYY-MM-DD');
@@ -225,7 +232,7 @@ function CalendarView(props: any): JSX.Element {
       // normal column
       dayList.forEach((item: DayListData, i: number) => {
         const day = moment(item.fullDateStr).format('D');
-        const moodStr = props.journals[i];
+        const moodStr = journals[i];
 
         const color = mood[moodStr];
 
@@ -296,6 +303,9 @@ function CalendarView(props: any): JSX.Element {
   };
 
   const handleDecreaseMonth = () => {
+    const randomJournalsList = _.shuffle(journals);
+    setJournals(randomJournalsList);
+
     const month = moment(today).subtract(1, 'month').format('MMMM');
     setCurrentMonth(month);
 
@@ -313,6 +323,9 @@ function CalendarView(props: any): JSX.Element {
   };
 
   const handleIncreaseMonth = () => {
+    const randomJournalsList = _.shuffle(journals);
+    setJournals(randomJournalsList);
+
     const month = moment(today).add(1, 'month').format('MMMM');
     setCurrentMonth(month);
 
