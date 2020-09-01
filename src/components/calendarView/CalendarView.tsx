@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, TouchableOpacity } from 'react-native';
 import { Col, Grid } from 'react-native-easy-grid';
+import _ from 'lodash';
 import moment from 'moment';
-import { Entypo } from '@expo/vector-icons';
+import { Entypo, AntDesign } from '@expo/vector-icons';
 
 const styles = StyleSheet.create({
   container: {
@@ -10,15 +11,15 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   viewContainer: {
-    marginVertical: 50,
+    marginVertical: 55,
     padding: 25,
   },
   currentMonth: {
-    fontSize: 30,
+    fontSize: 26,
     color: 'black',
   },
   currentYear: {
-    fontSize: 30,
+    fontSize: 26,
     color: 'black',
     marginLeft: 10,
   },
@@ -42,8 +43,12 @@ const mood: Mood = {
 };
 
 function CalendarView(props: any): JSX.Element {
+  const [today, setToday] = useState('');
   const [currentMonth, setCurrentMonth] = useState('');
   const [currentYear, setCurrentYear] = useState('');
+  const [yearStr, setYearStr] = useState('');
+  const [monthStr, setMonthStr] = useState('');
+
   const [weekDays, setWeekDays] = useState<string[]>([]);
 
   const [mondayList, setMondayList] = useState<DayListData[]>([]);
@@ -54,14 +59,32 @@ function CalendarView(props: any): JSX.Element {
   const [saturdayList, setSaturdayList] = useState<DayListData[]>([]);
   const [sundayList, setSundayList] = useState<DayListData[]>([]);
 
-  const [addEmptyBox, setAddEmptyBox] = useState(false);
+  const [journals, setJournals] = useState<string[]>([]);
 
   useEffect(() => {
+    getToday();
     getCurrentMonth();
     getCurrentYear();
+    getYearStr();
+    getMonthStr();
+
     getWeekDays();
-    getAvailableDaysInMonth();
   }, []);
+
+  useEffect(() => {
+    if (yearStr && monthStr) {
+      getAvailableDaysInMonth(yearStr, monthStr);
+    }
+  }, [yearStr, monthStr]);
+
+  useEffect(() => {
+    setJournals(props.journals);
+  }, [props.journals]);
+
+  const getToday = () => {
+    const today = moment().format('YYYY-MM-DD');
+    setToday(today);
+  };
 
   const getCurrentMonth = () => {
     const month = moment().format('MMMM');
@@ -73,14 +96,22 @@ function CalendarView(props: any): JSX.Element {
     setCurrentYear(year);
   };
 
+  const getYearStr = () => {
+    const yearStr = moment().year().toString();
+    setYearStr(yearStr);
+  };
+
+  const getMonthStr = () => {
+    const monthStr = moment().format('MM');
+    setMonthStr(monthStr);
+  };
+
   const getWeekDays = () => {
     const weekDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
     setWeekDays(weekDays);
   };
 
-  const getAvailableDaysInMonth = () => {
-    const yearStr = moment().year().toString();
-    const monthStr = moment().format('MM');
+  const getAvailableDaysInMonth = (yearStr: string, monthStr: string) => {
     const dateStr = `${yearStr}-${monthStr}`;
     const availableDaysInMonth = Array.from(Array(moment(dateStr).daysInMonth()), (_, i) => i + 1);
 
@@ -105,11 +136,6 @@ function CalendarView(props: any): JSX.Element {
     }
 
     if (formattedAvailableDaysInMonth) {
-      const firstDayWeekDay = formattedAvailableDaysInMonth[0].isoWeekDay;
-      if (firstDayWeekDay > 1) {
-        setAddEmptyBox(true);
-      }
-
       const mondayList = formattedAvailableDaysInMonth.filter((item: DayListData, i: number) => {
         return item.isoWeekDay === 1;
       });
@@ -147,7 +173,7 @@ function CalendarView(props: any): JSX.Element {
     }
   };
 
-  const renderWeekDays = () => {
+  const renderWeekDays = (weekDays: string[]) => {
     let weekDaysDiv = null;
 
     if (weekDays) {
@@ -165,38 +191,22 @@ function CalendarView(props: any): JSX.Element {
     return weekDaysDiv;
   };
 
-  const renderDayListDiv = (dayList: DayListData[], firstColumn: boolean) => {
+  const renderDayListDiv = (dayList: DayListData[]) => {
     const dayListDiv: any[] = [];
 
     if (dayList) {
       const today = moment().format('YYYY-MM-DD');
 
-      // determine first column to move down
-      if (firstColumn && addEmptyBox) {
-        const resultDiv = (
-          <View style={{ flexDirection: 'column', alignItems: 'center' }}>
-            <View
-              style={{
-                backgroundColor: 'transparent',
-                width: 40,
-                height: 40,
-                borderRadius: 5,
-                marginTop: 25,
-                marginBottom: 10,
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            />
-            <View>
-              <Text style={{ color: 'transparent' }}>0</Text>
-            </View>
-          </View>
-        );
-        dayListDiv.push(resultDiv);
-      }
-
-      // determine other column to move down
-      if (dayList.length < mondayList.length) {
+      // determine column to move down
+      if (
+        dayList.length < mondayList.length ||
+        dayList.length < tuesdayList.length ||
+        dayList.length < wednesdayList.length ||
+        dayList.length < thursdayList.length ||
+        dayList.length < fridayList.length ||
+        dayList.length < saturdayList.length ||
+        dayList.length < sundayList.length
+      ) {
         const resultDiv = (
           <View style={{ flexDirection: 'column', alignItems: 'center' }}>
             <View
@@ -222,7 +232,7 @@ function CalendarView(props: any): JSX.Element {
       // normal column
       dayList.forEach((item: DayListData, i: number) => {
         const day = moment(item.fullDateStr).format('D');
-        const moodStr = props.journals[i];
+        const moodStr = journals[i];
 
         const color = mood[moodStr];
 
@@ -292,27 +302,78 @@ function CalendarView(props: any): JSX.Element {
     return emojiIcon;
   };
 
+  const handleDecreaseMonth = () => {
+    const randomJournalsList = _.shuffle(journals);
+    setJournals(randomJournalsList);
+
+    const month = moment(today).subtract(1, 'month').format('MMMM');
+    setCurrentMonth(month);
+
+    const monthStr = moment(today).subtract(1, 'month').format('MM');
+    setMonthStr(monthStr);
+
+    const newToday = moment(today).subtract(1, 'month').format('YYYY-MM-DD');
+    setToday(newToday);
+
+    const year = moment(today).subtract(1, 'month').year().toString();
+    setCurrentYear(year);
+
+    const yearStr = moment(today).subtract(1, 'month').year().toString();
+    setYearStr(yearStr);
+  };
+
+  const handleIncreaseMonth = () => {
+    const randomJournalsList = _.shuffle(journals);
+    setJournals(randomJournalsList);
+
+    const month = moment(today).add(1, 'month').format('MMMM');
+    setCurrentMonth(month);
+
+    const monthStr = moment(today).add(1, 'month').format('MM');
+    setMonthStr(monthStr);
+
+    const newToday = moment(today).add(1, 'month').format('YYYY-MM-DD');
+    setToday(newToday);
+
+    const year = moment(today).add(1, 'month').year().toString();
+    setCurrentYear(year);
+
+    const yearStr = moment(today).add(1, 'month').year().toString();
+    setYearStr(yearStr);
+  };
+
   return (
     <ScrollView style={styles.container}>
       <View style={styles.viewContainer}>
-        <View style={{ flexDirection: 'row' }}>
-          <Text style={styles.currentMonth}>{currentMonth}</Text>
-          <Text style={styles.currentYear}>{currentYear}</Text>
+        <View style={{ flex: 1, flexDirection: 'row' }}>
+          <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
+            <Text style={styles.currentMonth}>{currentMonth}</Text>
+            <Text style={styles.currentYear}>{currentYear}</Text>
+          </View>
+
+          <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
+            <TouchableOpacity onPress={() => handleDecreaseMonth()}>
+              <AntDesign name="arrowleft" size={24} color="black" />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => handleIncreaseMonth()} style={{ marginLeft: 10 }}>
+              <AntDesign name="arrowright" size={24} color="black" />
+            </TouchableOpacity>
+          </View>
         </View>
 
         <View style={{ marginTop: 40 }}>
-          <Grid>{renderWeekDays()}</Grid>
+          <Grid>{renderWeekDays(weekDays)}</Grid>
         </View>
 
         <View>
           <Grid>
-            <Col>{renderDayListDiv(mondayList, true)}</Col>
-            <Col>{renderDayListDiv(tuesdayList, false)}</Col>
-            <Col>{renderDayListDiv(wednesdayList, false)}</Col>
-            <Col>{renderDayListDiv(thursdayList, false)}</Col>
-            <Col>{renderDayListDiv(fridayList, false)}</Col>
-            <Col>{renderDayListDiv(saturdayList, false)}</Col>
-            <Col>{renderDayListDiv(sundayList, false)}</Col>
+            <Col>{renderDayListDiv(mondayList)}</Col>
+            <Col>{renderDayListDiv(tuesdayList)}</Col>
+            <Col>{renderDayListDiv(wednesdayList)}</Col>
+            <Col>{renderDayListDiv(thursdayList)}</Col>
+            <Col>{renderDayListDiv(fridayList)}</Col>
+            <Col>{renderDayListDiv(saturdayList)}</Col>
+            <Col>{renderDayListDiv(sundayList)}</Col>
           </Grid>
         </View>
       </View>
