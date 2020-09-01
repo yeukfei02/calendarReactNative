@@ -58,8 +58,6 @@ function CalendarView(props: any): JSX.Element {
   const [saturdayList, setSaturdayList] = useState<DayListData[]>([]);
   const [sundayList, setSundayList] = useState<DayListData[]>([]);
 
-  const [addEmptyBox, setAddEmptyBox] = useState(false);
-
   useEffect(() => {
     getToday();
     getCurrentMonth();
@@ -131,11 +129,6 @@ function CalendarView(props: any): JSX.Element {
     }
 
     if (formattedAvailableDaysInMonth) {
-      const firstDayWeekDay = formattedAvailableDaysInMonth[0].isoWeekDay;
-      if (firstDayWeekDay > 1) {
-        setAddEmptyBox(true);
-      }
-
       const mondayList = formattedAvailableDaysInMonth.filter((item: DayListData, i: number) => {
         return item.isoWeekDay === 1;
       });
@@ -191,38 +184,22 @@ function CalendarView(props: any): JSX.Element {
     return weekDaysDiv;
   };
 
-  const renderDayListDiv = (dayList: DayListData[], firstColumn: boolean) => {
+  const renderDayListDiv = (dayList: DayListData[]) => {
     const dayListDiv: any[] = [];
 
     if (dayList) {
       const today = moment().format('YYYY-MM-DD');
 
-      // determine first column to move down
-      if (firstColumn && addEmptyBox) {
-        const resultDiv = (
-          <View style={{ flexDirection: 'column', alignItems: 'center' }}>
-            <View
-              style={{
-                backgroundColor: 'transparent',
-                width: 40,
-                height: 40,
-                borderRadius: 5,
-                marginTop: 25,
-                marginBottom: 10,
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            />
-            <View>
-              <Text style={{ color: 'transparent' }}>0</Text>
-            </View>
-          </View>
-        );
-        dayListDiv.push(resultDiv);
-      }
-
-      // determine other column to move down
-      if (dayList.length < mondayList.length) {
+      // determine column to move down
+      if (
+        dayList.length < mondayList.length ||
+        dayList.length < tuesdayList.length ||
+        dayList.length < wednesdayList.length ||
+        dayList.length < thursdayList.length ||
+        dayList.length < fridayList.length ||
+        dayList.length < saturdayList.length ||
+        dayList.length < sundayList.length
+      ) {
         const resultDiv = (
           <View style={{ flexDirection: 'column', alignItems: 'center' }}>
             <View
@@ -377,13 +354,13 @@ function CalendarView(props: any): JSX.Element {
 
         <View>
           <Grid>
-            <Col>{renderDayListDiv(mondayList, true)}</Col>
-            <Col>{renderDayListDiv(tuesdayList, false)}</Col>
-            <Col>{renderDayListDiv(wednesdayList, false)}</Col>
-            <Col>{renderDayListDiv(thursdayList, false)}</Col>
-            <Col>{renderDayListDiv(fridayList, false)}</Col>
-            <Col>{renderDayListDiv(saturdayList, false)}</Col>
-            <Col>{renderDayListDiv(sundayList, false)}</Col>
+            <Col>{renderDayListDiv(mondayList)}</Col>
+            <Col>{renderDayListDiv(tuesdayList)}</Col>
+            <Col>{renderDayListDiv(wednesdayList)}</Col>
+            <Col>{renderDayListDiv(thursdayList)}</Col>
+            <Col>{renderDayListDiv(fridayList)}</Col>
+            <Col>{renderDayListDiv(saturdayList)}</Col>
+            <Col>{renderDayListDiv(sundayList)}</Col>
           </Grid>
         </View>
       </View>
