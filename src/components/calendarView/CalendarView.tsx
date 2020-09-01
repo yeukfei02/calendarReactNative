@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, TouchableOpacity } from 'react-native';
 import { Col, Grid } from 'react-native-easy-grid';
 import moment from 'moment';
-import { Entypo } from '@expo/vector-icons';
+import { Entypo, AntDesign } from '@expo/vector-icons';
 
 const styles = StyleSheet.create({
   container: {
@@ -10,15 +10,15 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   viewContainer: {
-    marginVertical: 50,
+    marginVertical: 55,
     padding: 25,
   },
   currentMonth: {
-    fontSize: 30,
+    fontSize: 26,
     color: 'black',
   },
   currentYear: {
-    fontSize: 30,
+    fontSize: 26,
     color: 'black',
     marginLeft: 10,
   },
@@ -42,8 +42,12 @@ const mood: Mood = {
 };
 
 function CalendarView(props: any): JSX.Element {
+  const [today, setToday] = useState('');
   const [currentMonth, setCurrentMonth] = useState('');
   const [currentYear, setCurrentYear] = useState('');
+  const [yearStr, setYearStr] = useState('');
+  const [monthStr, setMonthStr] = useState('');
+
   const [weekDays, setWeekDays] = useState<string[]>([]);
 
   const [mondayList, setMondayList] = useState<DayListData[]>([]);
@@ -57,11 +61,25 @@ function CalendarView(props: any): JSX.Element {
   const [addEmptyBox, setAddEmptyBox] = useState(false);
 
   useEffect(() => {
+    getToday();
     getCurrentMonth();
     getCurrentYear();
+    getYearStr();
+    getMonthStr();
+
     getWeekDays();
-    getAvailableDaysInMonth();
   }, []);
+
+  useEffect(() => {
+    if (yearStr && monthStr) {
+      getAvailableDaysInMonth(yearStr, monthStr);
+    }
+  }, [yearStr, monthStr]);
+
+  const getToday = () => {
+    const today = moment().format('YYYY-MM-DD');
+    setToday(today);
+  };
 
   const getCurrentMonth = () => {
     const month = moment().format('MMMM');
@@ -73,14 +91,22 @@ function CalendarView(props: any): JSX.Element {
     setCurrentYear(year);
   };
 
+  const getYearStr = () => {
+    const yearStr = moment().year().toString();
+    setYearStr(yearStr);
+  };
+
+  const getMonthStr = () => {
+    const monthStr = moment().format('MM');
+    setMonthStr(monthStr);
+  };
+
   const getWeekDays = () => {
     const weekDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
     setWeekDays(weekDays);
   };
 
-  const getAvailableDaysInMonth = () => {
-    const yearStr = moment().year().toString();
-    const monthStr = moment().format('MM');
+  const getAvailableDaysInMonth = (yearStr: string, monthStr: string) => {
     const dateStr = `${yearStr}-${monthStr}`;
     const availableDaysInMonth = Array.from(Array(moment(dateStr).daysInMonth()), (_, i) => i + 1);
 
@@ -147,7 +173,7 @@ function CalendarView(props: any): JSX.Element {
     }
   };
 
-  const renderWeekDays = () => {
+  const renderWeekDays = (weekDays: string[]) => {
     let weekDaysDiv = null;
 
     if (weekDays) {
@@ -292,16 +318,61 @@ function CalendarView(props: any): JSX.Element {
     return emojiIcon;
   };
 
+  const handleDecreaseMonth = () => {
+    const month = moment(today).subtract(1, 'month').format('MMMM');
+    setCurrentMonth(month);
+
+    const monthStr = moment(today).subtract(1, 'month').format('MM');
+    setMonthStr(monthStr);
+
+    const newToday = moment(today).subtract(1, 'month').format('YYYY-MM-DD');
+    setToday(newToday);
+
+    const year = moment(today).subtract(1, 'month').year().toString();
+    setCurrentYear(year);
+
+    const yearStr = moment(today).subtract(1, 'month').year().toString();
+    setYearStr(yearStr);
+  };
+
+  const handleIncreaseMonth = () => {
+    const month = moment(today).add(1, 'month').format('MMMM');
+    setCurrentMonth(month);
+
+    const monthStr = moment(today).add(1, 'month').format('MM');
+    setMonthStr(monthStr);
+
+    const newToday = moment(today).add(1, 'month').format('YYYY-MM-DD');
+    setToday(newToday);
+
+    const year = moment(today).add(1, 'month').year().toString();
+    setCurrentYear(year);
+
+    const yearStr = moment(today).add(1, 'month').year().toString();
+    setYearStr(yearStr);
+  };
+
   return (
     <ScrollView style={styles.container}>
       <View style={styles.viewContainer}>
-        <View style={{ flexDirection: 'row' }}>
-          <Text style={styles.currentMonth}>{currentMonth}</Text>
-          <Text style={styles.currentYear}>{currentYear}</Text>
+        <View style={{ flex: 1, flexDirection: 'row' }}>
+          <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
+            <Text style={styles.currentMonth}>{currentMonth}</Text>
+            <Text style={styles.currentYear}>{currentYear}</Text>
+          </View>
+
+          <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
+            <TouchableOpacity onPress={() => handleDecreaseMonth()}>
+              <AntDesign name="arrowleft" size={24} color="black" />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => handleIncreaseMonth()} style={{ marginLeft: 10 }}>
+              <AntDesign name="arrowright" size={24} color="black" />
+            </TouchableOpacity>
+          </View>
         </View>
 
         <View style={{ marginTop: 40 }}>
-          <Grid>{renderWeekDays()}</Grid>
+          <Grid>{renderWeekDays(weekDays)}</Grid>
         </View>
 
         <View>
