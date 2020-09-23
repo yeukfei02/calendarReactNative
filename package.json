@@ -1,6 +1,7 @@
 {
   "version": "1.0.1",
   "main": "node_modules/expo/AppEntry.js",
+  "private": true,
   "dependencies": {
     "@expo/vector-icons": "^10.2.1",
     "@types/jest": "^26.0.10",
@@ -13,6 +14,7 @@
     "eslint-plugin-react": "^7.20.6",
     "expo": "~38.0.8",
     "git-cz": "^4.7.1",
+    "husky": "^4.3.0",
     "jest": "^26.4.2",
     "jest-expo": "^38.0.2",
     "lodash": "^4.17.20",
@@ -43,5 +45,10 @@
     "commit": "npx git-cz",
     "release": "standard-version"
   },
-  "private": true
+  "husky": {
+    "hooks": {
+      "pre-commit": "yarn lint",
+      "pre-push": "yarn lint"
+    }
+  }
 }
