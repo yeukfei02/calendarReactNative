@@ -1,4 +1,5 @@
 {
+  "version": "1.0.1",
   "main": "node_modules/expo/AppEntry.js",
   "dependencies": {
     "@expo/vector-icons": "^10.2.1",
@@ -22,7 +23,8 @@
     "react-dom": "~16.11.0",
     "react-native": "https://github.com/expo/react-native/archive/sdk-38.0.2.tar.gz",
     "react-native-easy-grid": "^0.2.2",
-    "react-native-web": "~0.11.7"
+    "react-native-web": "~0.11.7",
+    "standard-version": "^9.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.8.6",
@@ -38,7 +40,8 @@
     "eject": "expo eject",
     "test": "jest",
     "lint": "eslint '*/**/*.{ts,tsx}' --quiet --fix",
-    "commit": "npx git-cz"
+    "commit": "npx git-cz",
+    "release": "standard-version"
   },
   "private": true
 }
