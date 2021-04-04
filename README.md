@@ -10,13 +10,15 @@
 
 display random mood in calendar
 
-## Requirement:
- - install expo-cli
- - install yarn
- - install node (v12+)
+## Requirement
 
-## Testing and run:
-```
+- install expo-cli
+- install yarn
+- install node (v12+)
+
+## Testing and run
+
+```zsh
 $ yarn
 
 // expo start
@@ -35,7 +37,7 @@ $ yarn run test
 $ yarn run lint
 ```
 
-```
+```zsh
 // publish project to expo
 $ expo publish
 
